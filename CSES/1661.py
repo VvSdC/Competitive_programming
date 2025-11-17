@@ -1,23 +1,36 @@
-def static_sum_query():
-    # Taking n and q as input
-    n,q = map(int, input().split())
+import sys
+import random
 
-    # Taking the array input
-    arr = list(map(int, input().split()))
+RANDOM = random.randrange(2**62)
 
-    # Taking the queries list
-    queries = [tuple(map(int,input().split())) for index in range(q)]
+def hash_wrapper(x):
+    return x^RANDOM
 
-    # Creating the prefix sum array
-    prefix_sum = [0]*(n+1)
+def subarray_sums2():
+    # Taking input of n and x
+    n,x = map(int,input().split())
 
-    for i in range(n):
-        prefix_sum[i+1] = prefix_sum[i] + arr[i]
+    # Taking list input
+    arr = list(map(int,input().split()))
 
-    # Processing each query
-    for l,r in queries:
-        print(prefix_sum[r]-prefix_sum[l-1])
+    current_sum = 0
+    mp = {hash_wrapper(0):1}
+    total_subarrays = 0
 
+    for number in arr:
+        current_sum += number
+
+        key = hash_wrapper(current_sum - x)
+        if key in mp:
+            total_subarrays += mp[key]
+
+        key = hash_wrapper(current_sum)
+        if key in mp:
+            mp[key] += 1
+        else:
+            mp[key] = 1
+
+    print(total_subarrays)
 
 if __name__ == "__main__":
-    static_sum_query()
+    subarray_sums2()
